@@ -55335,14 +55335,22 @@ function getManifestFromSpdxFile(document, fileName) {
  * Each manifest is collected and returned in an array.
  *
  * @param {string[]} files - An array of file paths pointing to SPDX files.
+ * @param {string} manifestPath - An optional path to display for the submitted manifest.
  * @returns {Object[]} An array of manifest objects extracted from the SPDX files.
  */
-function getManifestsFromSpdxFiles(files) {
+function getManifestsFromSpdxFiles(files, manifestPath = '') {
     debug(`Processing ${files.length} files`);
+    if (manifestPath && files.length > 1) {
+        throw new Error("The 'manifestPath' input can only be used when one SPDX file is uploaded.");
+    }
+
     let manifests = [];
     files?.forEach(file => {
         debug(`Processing ${file}`);
-        manifests.push(getManifestFromSpdxFile(JSON.parse(external_fs_.readFileSync(file)), file));
+        manifests.push(getManifestFromSpdxFile(
+            JSON.parse(external_fs_.readFileSync(file)),
+            manifestPath || file
+        ));
     });
     return manifests;
 }
@@ -55557,7 +55565,8 @@ async function submitSnapshot(snapshot, context) {
 const index_VERSION = "0.3.2";
 
 async function run() {
-  let manifests = getManifestsFromSpdxFiles(searchFiles());
+  const files = searchFiles();
+  let manifests = getManifestsFromSpdxFiles(files, getInput('manifestPath'));
   const submissionContext = getSubmissionContext(github_context, getInput('repoPath') || process.cwd());
 
   const correlator = getInput('correlator');

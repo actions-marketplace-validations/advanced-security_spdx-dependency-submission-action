@@ -7,7 +7,8 @@ import * as lib from './lib/index.js';
 const VERSION = "0.3.2";
 
 async function run() {
-  let manifests = lib.getManifestsFromSpdxFiles(lib.searchFiles());
+  const files = lib.searchFiles();
+  let manifests = lib.getManifestsFromSpdxFiles(files, core.getInput('manifestPath'));
   const submissionContext = lib.getSubmissionContext(context, core.getInput('repoPath') || process.cwd());
 
   const correlator = core.getInput('correlator');

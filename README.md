@@ -40,6 +40,19 @@ jobs:
         filePath: "_manifest/spdx_2.2/"
 ```
 
+### Customize the displayed manifest path
+
+Set `manifestPath` to override the path displayed for the manifest in GitHub's dependency graph. This does not change where the action reads the SPDX file from. Because manifest paths identify submissions, this input can only be used when `filePath` and `filePattern` match one SPDX file.
+
+```yaml
+    - name: SBOM upload
+      uses: advanced-security/spdx-dependency-submission-action@v0
+      with:
+        filePath: "${{ runner.temp }}/sbom_verification"
+        filePattern: "sbom.spdx.json"
+        manifestPath: "requirements.txt"
+```
+
 ## Submit to another repository
 
 Set `repo` to submit the snapshot to a repository other than the one running the workflow. `owner` defaults to the workflow repository owner. When `repoSha` or `repoRef` is omitted, the action detects it from the checked-out repository at `repoPath`. Set `repoPath` when the target repository is checked out somewhere other than the Actions working directory.
