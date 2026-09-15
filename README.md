@@ -1,6 +1,6 @@
 # SPDX to Dependency Graph Action
 
-This repository makes it easy to upload an SPDX 2.2 formatted SBOM to GitHub's dependency submission API.
+This repository makes it easy to upload an SPDX 2.2 formatted SBOM to GitHub's dependency submission API, preserving `DEPENDS_ON` relationships between packages.
 This lets you quickly receive Dependabot alerts for package manifests which GitHub doesn't directly support like pnpm or Paket by using existing off-the-shelf SBOM generators.
 
 ## Example workflow
@@ -38,6 +38,19 @@ jobs:
       uses: advanced-security/spdx-dependency-submission-action@v0.3.2
       with:
         filePath: "_manifest/spdx_2.2/"
+```
+
+### Customize the displayed manifest path
+
+Set `manifestPath` to override the path displayed for the manifest in GitHub's dependency graph. This does not change where the action reads the SPDX file from. Because manifest paths identify submissions, this input can only be used when `filePath` and `filePattern` match one SPDX file.
+
+```yaml
+    - name: SBOM upload
+      uses: advanced-security/spdx-dependency-submission-action@v0
+      with:
+        filePath: "${{ runner.temp }}/sbom_verification"
+        filePattern: "sbom.spdx.json"
+        manifestPath: "requirements.txt"
 ```
 
 ## Submit to another repository
